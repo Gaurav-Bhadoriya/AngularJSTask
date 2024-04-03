@@ -101,8 +101,6 @@ contactApplication.controller('crudController', function($scope, $window) {
                 var sheetName = workbook.SheetNames[0];
                 var sheet = workbook.Sheets[sheetName];
                 var importedData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        
-                // Assuming importedData is an array of arrays representing contact data
                 importedData.forEach(function(contactArray) {
                     var newContact = {
                         name: contactArray[0],
@@ -122,10 +120,8 @@ contactApplication.controller('crudController', function($scope, $window) {
 
         $scope.exportData = function() {
             var data = [];
-            var headers = ['Name', 'Email', 'Phone']; // Adjust headers as needed
-            // Add headers
+            var headers = ['Name', 'Email', 'Phone']; 
             data.push(headers);
-            // Add contact details
             $scope.contacts.forEach(function(contact) {
                 var contactData = [
                     contact.name,
