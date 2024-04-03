@@ -1,3 +1,41 @@
+contactApplication.directive('contactCard', function() {
+    return {
+        restrict: 'E',
+        scope: {
+            contact: '=' // Two-way binding to the contact object
+        },
+        template: `
+                        <div class="contact-card" ng-dblclick="openPopup(contact)">
+                            <img ng-src="{{ contact.image }}" alt="Contact Image" />
+                            <p>Name: {{ contact.name }}</p>
+                            <p>Email: {{ contact.email }}</p>
+                            <p>Phone: {{ contact.phone }}</p>
+                            <button class="btn btn-primary" ng-click="openEditModal(contact)">
+                                 Edit
+                             </button>
+                             <button class="btn btn-danger" ng-click="deleteContact(contact)">
+                                 Delete
+                             </button>    
+                        </div>
+                    `,
+        link: function(scope, element, attrs) {
+            scope.openPopup = function(contact) {
+                // Emit an event to notify the controller that popup should be opened
+                scope.$emit('openPopup', contact);
+            };
+            scope.openEditModal = function(contact) {
+                // Emit an event to notify the controller that edit modal should be opened
+                scope.$emit('openEditModal', contact);
+            };
+
+            scope.deleteContact = function(contact) {
+                // Emit an event to notify the controller that contact should be deleted
+                scope.$emit('deleteContact', contact);
+            };
+        }
+    };
+});
+
 contactApplication.controller('crudController', function($scope, $window) {
         // Initialize or retrieve contacts associated with the current user
         $scope.contacts = JSON.parse(localStorage.getItem('contacts')) || [];
@@ -44,10 +82,24 @@ contactApplication.controller('crudController', function($scope, $window) {
                 $scope.contacts[index] = $scope.selectedContact;
                 saveContacts();
                 $('#editEmployeeModal').modal('hide');
+               // $('#contactPopup').modal('hide'); 
             }
         };
 
-        // Function to handle deleting a contact
+           $scope.editContact = function() {
+        // Find the index of the selected contact
+        var index = $scope.contacts.findIndex(function(contact) {
+            return contact.id === $scope.selectedContact.id;
+        });
+        if (index !== -1) {
+            // Update contact details   
+            $scope.contacts[index] = $scope.selectedContact;
+            saveContacts();
+            $('#contactPopup').modal('hide');
+        }
+    };
+    
+    //  Function to handle deleting a contact
         $scope.deleteContact = function(contact) {
             var index = $scope.contacts.indexOf(contact);
             if (index !== -1) {
@@ -69,6 +121,20 @@ contactApplication.controller('crudController', function($scope, $window) {
             $('#deleteEmployeeModal').modal('show');
         };
     
+        $scope.$on('openEditModal', function(event, contact) {
+            $scope.openEditModal(contact);
+        });
+    
+        // Listen for the event to delete contact
+        $scope.$on('deleteContact', function(event, contact) {
+            $scope.deleteContact(contact);
+        });
+
+        $scope.$on('openPopup', function(event, contact) {
+            $scope.selectedContact = contact; // Store the selected contact
+            $('#contactPopup').modal('show'); // Show the popup
+        });
+
         // Function to handle setting file for image upload
         $scope.setFile = function(element) {
             $scope.currentFile = element.files[0];
@@ -89,7 +155,7 @@ contactApplication.controller('crudController', function($scope, $window) {
             };
             reader.readAsDataURL(element.files[0]);
         };
-    
+
         $scope.importData = function() {
             var fileInput = document.getElementById('importFile');
             var file = fileInput.files[0];
@@ -144,3 +210,5 @@ contactApplication.controller('crudController', function($scope, $window) {
             saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), 'contacts.xlsx');
         };  
     });
+
+    
