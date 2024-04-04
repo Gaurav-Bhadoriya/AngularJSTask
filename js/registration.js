@@ -10,6 +10,15 @@ contactApplication.controller('authController', function($scope, $window) {
 
 // Inside the authController
 $scope.signup = function() {
+    var existingUser = $scope.users.find(function(user) {
+        return user.email === $scope.signupEmail;
+    });
+
+    if (existingUser) {
+        alert("Email already exists. Please use a different email.");
+        return; // Exit the function if email already exists
+    }
+
     var user = {
         username: $scope.signupUsername,
         email: $scope.signupEmail,
@@ -17,10 +26,15 @@ $scope.signup = function() {
         contacts: [] // Initialize an empty array for contacts
     };
 
-    $scope.users.push(user);
-    localStorage.setItem('users', JSON.stringify($scope.users));
+    // Retrieve existing user data or initialize an empty object
+    var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
+    
+    // Store user data with email as key in localStorage
+    usersData[user.email] = user;
+    localStorage.setItem('usersData', JSON.stringify(usersData));
 
     console.log('Sign Up Success');
+    console.log('User Data Stored:', usersData); // Log user data
     $scope.signupUsername = '';
     $scope.signupEmail = '';
     $scope.signupPassword = '';
@@ -32,14 +46,27 @@ $scope.login = function() {
     var email = $scope.loginEmail;
     var password = $scope.loginPassword;
 
-    var authenticatedUser = $scope.users.find(function(user) {
-        return user.email === email && user.password === password;
-    });
+    // Retrieve user data from localStorage
+    var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
+    console.log('Retrieved User Data:', usersData); // Log retrieved user data
+    var authenticatedUser = null;
+
+    // Find user by email and password
+    for (var userEmail in usersData) {
+        if (usersData.hasOwnProperty(userEmail)) {
+            var user = usersData[userEmail];
+            if (user.email === email && user.password === password) {
+                authenticatedUser = user;
+                break;
+            }
+        }
+    }
 
     if (authenticatedUser) {
         console.log("Login successful. Redirecting...");
         $window.localStorage.setItem('currentUser', JSON.stringify(authenticatedUser)); // Store current user in local storage
-        $window.location.href = 'test.html'; // Redirect to contact list page
+        $scope.contacts = authenticatedUser.contacts || []; // Populate contacts list with current user's contacts
+        $window.location.href = 'listing.html'; // Redirect to contact list page
     } else {
         console.log("Login failed. Invalid email or password.");
         alert("Invalid email or password");
@@ -48,6 +75,7 @@ $scope.login = function() {
     $scope.loginEmail = '';
     $scope.loginPassword = '';
 };
+
 
 $scope.currentUser = JSON.parse($window.localStorage.getItem('currentUser'));
 // Ensure currentUser contains contacts array

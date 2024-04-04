@@ -38,11 +38,20 @@ contactApplication.directive('contactCard', function() {
 
 contactApplication.controller('crudController', function($scope, $window) {
         // Initialize or retrieve contacts associated with the current user
-        $scope.contacts = JSON.parse(localStorage.getItem('contacts')) || [];
-        function saveContacts() {
-                    localStorage.setItem('contacts', JSON.stringify($scope.contacts));
+         var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
+         // Retrieve or initialize contacts for the current user
+         var currentUserEmail = JSON.parse(localStorage.getItem('currentUser')).email;
+        var currentUser = usersData[currentUserEmail] || { contacts: [] };
+        $scope.contacts = currentUser.contacts;
+
+        function saveUserData() {
+                    usersData[currentUserEmail] = currentUser;
+                    localStorage.setItem('usersData', JSON.stringify(usersData));
                 }
 
+                function saveContacts() {
+                    saveUserData();
+                }
         // Function to generate unique IDs for contacts
         function generateUniqueId() {
             return '_' + Math.random().toString(36).substr(2, 9);
@@ -86,18 +95,6 @@ contactApplication.controller('crudController', function($scope, $window) {
             }
         };
 
-           $scope.editContact = function() {
-        // Find the index of the selected contact
-        var index = $scope.contacts.findIndex(function(contact) {
-            return contact.id === $scope.selectedContact.id;
-        });
-        if (index !== -1) {
-            // Update contact details   
-            $scope.contacts[index] = $scope.selectedContact;
-            saveContacts();
-            $('#contactPopup').modal('hide');
-        }
-    };
     
     //  Function to handle deleting a contact
         $scope.deleteContact = function(contact) {

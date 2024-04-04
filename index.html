@@ -8,12 +8,7 @@
   </head>
   <body ng-app="contactApplication">
     <div class="container" ng-controller="authController">
-      <div class="box-1">
-        <div class="content-holder">
-          <button class="button-1" ng-click="showSignUp()">Sign up</button>
-          <button class="button-2" ng-click="showSignIn()">Login</button>
-        </div>
-      </div>
+      
       <div class="box-2">
         <div class="login-form-container" ng-show="showLoginForm">
           <h1>Login Form</h1>
@@ -64,6 +59,12 @@
           <button class="signup-button" type="button" ng-click="signup()">
             Sign Up
           </button>
+        </div>
+      </div>
+      <div class="box-1">
+        <div class="content-holder">
+          <button class="button-1" ng-click="showSignUp()">Sign up</button>
+          <button class="button-2" ng-click="showSignIn()">Login</button>
         </div>
       </div>
     </div>
