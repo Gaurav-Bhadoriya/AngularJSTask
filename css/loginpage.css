@@ -8,7 +8,55 @@
   flex-direction: column; /* Stack items vertically */
 }
 
-/* Style the welcome section */
+/* Style box */
+.box-2, .box-1 {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  max-width: 400px;
+  width: 90%;
+}
+
+/* Style buttons */
+.login-button, .signup-button {
+  background-color: #008CBA;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover, .signup-button:hover {
+  background-color: #45a049;
+}
+
+/* Style input fields */
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #008CBA;
+}
+
+/* Center the forms */
+.login-form-container, .signup-form-container {
+  text-align: center;
+}
+
+/* Style welcome section */
 .welcome-section {
   text-align: center;
   margin-bottom: 20px;
@@ -19,61 +67,33 @@
   margin: 0; /* Remove default margins */
 }
 
-/* Style box */
-.box {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Style buttons */
-.button-1, .button-2 {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
+/* Style links in content holder */
+.content-holder a {
+  color: #008CBA;
   text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  transition-duration: 0.4s;
-  cursor: pointer;
-  border-radius: 8px;
 }
 
-.button-1:hover, .button-2:hover {
-  background-color: #45a049;
+.content-holder a:hover {
+  text-decoration: underline;
 }
 
-/* Style input fields */
-.input-field {
+/* Style error messages */
+/* .error-msg {
+  display: flex ;
+  font-family: Arial, Helvetica, sans-serif;
+  color: red;
+  font-size: 12px;
+  height: 20px; /* Set a fixed height for error messages 
+} */
+
+/* Add styles for error messages */
+.error-msg {
+  position: absolute;
+  /* bottom: 0; */
+  left: -142px;
   width: 100%;
-  padding: 10px;
-  margin: 5px 0 15px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-/* Style login and signup buttons */
-.login-button, .signup-button {
-  background-color: #008CBA;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.login-button:hover, .signup-button:hover {
-  background-color: #45a049;
-}
-
-/* Center the forms */
-.login-form-container, .signup-form-container {
-  text-align: center;
+  /* text-align: center; */
+  font-family: Arial, Helvetica, sans-serif;
+  color: red;
+  font-size: 12px;
 }
