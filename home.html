@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="box-2">
+    <div class="login-form-container" ng-show="showLoginForm">
+      <form name="loginForm" novalidate ng-submit="login()">
+        <h1>Login Form</h1>
+        <input type="email" name="emailinput" placeholder="Enter Your Email" class="input-field" ng-model="loginEmail"
+          required />
+        <div class="error-msg login-reg" ng-show="loginForm.emailinput.$dirty && loginForm.emailinput.$error.required">
+          <div><span>Email is required.</span></div>
+        </div>
+        <div ng-show="loginForm.emailinput.$dirty && loginForm.emailinput.$error.email">
+          <span class="error-msg login-reg">Invalid email format.</span>
+        </div>
+        <input type="password" placeholder="Password" class="input-field" ng-model="loginPassword" required />
+        <div ng-show="loginForm.password.$dirty && loginForm.password.$error.required">
+          <span class="error-msg login-reg">Password is required.</span>
+        </div>
+        <button class="login-button" type="submit" ng-disabled="loginForm.$invalid">
+          Login
+        </button>
+      </form>
+    </div>
+    <div class="signup-form-container" ng-show="showSignUpForm">
+      <form name="signupForm" novalidate ng-submit="signup()">
+        <h1>Sign Up Form</h1>
+        <input type="text" name="username" placeholder="Username" class="input-field" ng-model="signupUsername"
+          required />
+        <div class="error-msg login-reg" ng-show="usernameExists">
+          <span>Username already exists.</span>
+        </div>
+        <input type="email" name="email" placeholder="Email" class="input-field" ng-model="signupEmail" required />
+        <div ng-show="signupForm.email.$dirty && signupForm.email.$error.required">
+          <span class="error-msg login-reg">Email is required.</span>
+        </div>
+        <div ng-show="signupForm.email.$dirty && signupForm.email.$error.email">
+          <span class="error-msg login-reg">Invalid email format.</span>
+        </div>
+        <div class="error-msg login-reg" ng-show="emailExists">
+          <span>Email already exists.</span>
+        </div>
+        <input type="password" name="password" placeholder="Password" class="input-field" ng-model="signupPassword"
+          required />
+        <button class="signup-button" type="submit" ng-disabled="signupForm.$invalid">
+          Sign Up
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="box-1">
+    <div class="content-holder">
+      <p ng-if="showLoginForm">Don't have an account? <a href="" ng-click="showSignUp()">Register</a></p>
+      <p ng-if="!showLoginForm">Already have an account? <a href="" ng-click="showSignIn()">Login</a></p>
+    </div>
+  </div>
+</div>

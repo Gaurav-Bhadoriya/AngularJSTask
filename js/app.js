@@ -5,19 +5,21 @@ contactApplication.directive("contactCard", function () {
       contact: "=", // Two-way binding to the contact object
     },
     template: `
-                        <div class="contact-card" ng-dblclick="openPopup(contact)">
-                            <img ng-src="{{ contact.image }}" alt="Contact Image" />
-                            <p>Name: {{ contact.name }}</p>
-                            <p>Email: {{ contact.email }}</p>
-                            <p>Phone: {{ contact.phone }}</p>
-                            <button class="btn btn-primary" ng-click="openEditModal(contact)">
-                                 Edit
-                             </button>
-                             <button class="btn btn-danger" ng-click="deleteContact(contact)">
-                                 Delete
-                             </button>    
-                        </div>
-                    `,
+      <div class="contact-card" ng-dblclick="openPopup(contact)">
+        <img style="max-height: 150px; margin-left: 16px;" ng-src="{{ contact.image || 'testimage.jpg' }}" alt="Contact Image" />
+        <p style="margin-left: 20px">Name: {{ contact.name }}</p>
+        <p style="margin-left: 20px">Email: {{ contact.email }}</p>
+        <p style="margin-left: 20px">Phone: {{ contact.phone }}</p>
+        <button class="btn btn-primary" ng-click="openEditModal(contact)" style="margin-left: 20px">
+          Edit
+        </button>
+        <button class="btn btn-danger" ng-click="deleteContact(contact)">
+          Delete
+        </button>
+      </div>
+      <div ng-show="contacts.length === 0" class="no-data-message">No contacts available. Please insert data.</div>
+    `,
+
     link: function (scope, element, attrs) {
       scope.openPopup = function (contact) {
         // Emit an event to notify the controller that popup should be opened
@@ -43,15 +45,14 @@ contactApplication.controller("crudController", function ($scope, $window) {
   var currentUserEmail = JSON.parse(localStorage.getItem("currentUser")).email;
   var currentUser = usersData[currentUserEmail] || { contacts: [] };
   $scope.contacts = currentUser.contacts;
-
   function saveUserData() {
     usersData[currentUserEmail] = currentUser;
     localStorage.setItem("usersData", JSON.stringify(usersData));
   }
-
   function saveContacts() {
     saveUserData();
   }
+
   // Function to generate unique IDs for contacts
   function generateUniqueId() {
     return "_" + Math.random().toString(36).substr(2, 9);
@@ -59,7 +60,6 @@ contactApplication.controller("crudController", function ($scope, $window) {
   $scope.addContact = function () {
     // Initialize newContact object
     $scope.newContact = $scope.newContact || {};
-
     // Handle image data
     if ($scope.newContact.imageData) {
       $scope.newContact.image = $scope.newContact.imageData; // Assign image data to 'image' property
@@ -69,31 +69,45 @@ contactApplication.controller("crudController", function ($scope, $window) {
     // Push the new contact to the contacts array and save to localStorage
     $scope.contacts.push($scope.newContact);
     saveContacts();
-    // Clear the newContact object and hide the modal
-    $scope.newContact = {};
+    $window.location.reload();
     $("#addEmployeeModal").modal("hide");
   };
 
-  // Function to handle updating a contact
-  $scope.updateContact = function () {
-    // Check if the selected contact is defined and has image data
-    if ($scope.selectedContact && $scope.selectedContact.imageData) {
+  $scope.deleteImage = function () {
+     delete $scope.selectedContact.image;
+     delete $scope.selectedContact.imageData;
+ };
+
+ $scope.updateContact = function () {
+  if ($scope.selectedContact) {
+    // Check if the delete image button was clicked
+    if ($scope.deleteImageFlag) {
+      // Delete the image from the selected contact
+      delete $scope.selectedContact.image;
+    }
+    // Handle image data
+    if ($scope.selectedContact.imageData) {
       // Update the image with the new image data
       $scope.selectedContact.image = $scope.selectedContact.imageData;
       // Remove the image data property as it's no longer needed
       delete $scope.selectedContact.imageData;
     }
+
     var index = $scope.contacts.findIndex(function (contact) {
       return contact.id === $scope.selectedContact.id;
     });
+
     if (index !== -1) {
-      // Update contact details
+      // Update contact details 
       $scope.contacts[index] = $scope.selectedContact;
       saveContacts();
       $("#editEmployeeModal").modal("hide");
-      // $('#contactPopup').modal('hide');
+      $('#contactPopup').modal('hide');
     }
-  };
+
+    $window.location.reload();  
+  }
+};
 
   //  Function to handle deleting a contact
   $scope.deleteContact = function (contact) {
@@ -131,6 +145,13 @@ contactApplication.controller("crudController", function ($scope, $window) {
     $("#contactPopup").modal("show"); // Show the popup
   });
 
+  $(document).ready(function(){
+    $("#addEmployeeModal").modal("hide");
+    $('#addEmployeeModal').on('hidden.bs.modal', function () {
+        $('#addEmployeeModal form')[0].reset();
+    });
+});
+
   // Function to handle setting file for image upload
   $scope.setFile = function (element) {
     $scope.currentFile = element.files[0];
@@ -147,7 +168,7 @@ contactApplication.controller("crudController", function ($scope, $window) {
         // Set the image data property on the new contact
         $scope.newContact.imageData = event.target.result;
       }
-      $scope.$apply();
+      //$scope.$apply();
     };
     reader.readAsDataURL(element.files[0]);
   };
@@ -204,4 +225,15 @@ contactApplication.controller("crudController", function ($scope, $window) {
       "contacts.xlsx"
     );
   };
+
+  $scope.logout = function () {
+    // Close all other pages
+    $window.close();
+    localStorage.setItem("loggedInUser", "false");
+    // Replace the current URL in the browser history with the login page URL
+    $window.history.replaceState(null, null, "index.html");
+    // Redirect to the login page
+    $window.location.href = "index.html";
+  };
+
 });

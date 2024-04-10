@@ -5,7 +5,7 @@
   align-items: center;
   height: 100vh;
   background-color: #f0f0f0;
-  flex-direction: column; /* Stack items vertically */
+  flex-direction: column; 
 }
 
 /* Style box */
@@ -64,7 +64,7 @@
 
 /* Center the "Hello!" message */
 .welcome-section h2 {
-  margin: 0; /* Remove default margins */
+  margin: 0;
 }
 
 /* Style links in content holder */
@@ -76,24 +76,16 @@
 .content-holder a:hover {
   text-decoration: underline;
 }
-
-/* Style error messages */
-/* .error-msg {
-  display: flex ;
-  font-family: Arial, Helvetica, sans-serif;
-  color: red;
-  font-size: 12px;
-  height: 20px; /* Set a fixed height for error messages 
-} */
-
-/* Add styles for error messages */
+  
 .error-msg {
   position: absolute;
-  /* bottom: 0; */
-  left: -142px;
+  /* left: -120px; */
   width: 100%;
-  /* text-align: center; */
   font-family: Arial, Helvetica, sans-serif;
   color: red;
   font-size: 12px;
+}
+
+.login-reg{
+  left: -120px;
 }
